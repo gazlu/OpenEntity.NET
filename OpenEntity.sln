@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbFactory", "DbFactory\DbFactory.csproj", "{E6ECF365-B13F-4BC7-B9F0-475A6A07A2FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Extensions", "Extensions\Extensions.csproj", "{0DB566CF-2A66-422C-A0C5-063680002D3E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{B539396F-F436-4984-A276-7B74F57EF5B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E6ECF365-B13F-4BC7-B9F0-475A6A07A2FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6ECF365-B13F-4BC7-B9F0-475A6A07A2FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6ECF365-B13F-4BC7-B9F0-475A6A07A2FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6ECF365-B13F-4BC7-B9F0-475A6A07A2FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DB566CF-2A66-422C-A0C5-063680002D3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DB566CF-2A66-422C-A0C5-063680002D3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DB566CF-2A66-422C-A0C5-063680002D3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DB566CF-2A66-422C-A0C5-063680002D3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B539396F-F436-4984-A276-7B74F57EF5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B539396F-F436-4984-A276-7B74F57EF5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B539396F-F436-4984-A276-7B74F57EF5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B539396F-F436-4984-A276-7B74F57EF5B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

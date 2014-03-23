@@ -1,0 +1,5 @@
+E:\PSWork\MVC\OpenEntity\OpenEntity\Extensions\bin\Debug\Extensions.dll
+E:\PSWork\MVC\OpenEntity\OpenEntity\Extensions\bin\Debug\Extensions.pdb
+E:\PSWork\MVC\OpenEntity\OpenEntity\Extensions\obj\Debug\Extensions.csprojResolveAssemblyReference.cache
+E:\PSWork\MVC\OpenEntity\OpenEntity\Extensions\obj\Debug\Extensions.dll
+E:\PSWork\MVC\OpenEntity\OpenEntity\Extensions\obj\Debug\Extensions.pdb

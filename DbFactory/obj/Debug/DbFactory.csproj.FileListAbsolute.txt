@@ -1,0 +1,7 @@
+E:\PSWork\MVC\OpenEntity\OpenEntity\DbFactory\obj\Debug\DbFactory.csprojResolveAssemblyReference.cache
+E:\PSWork\MVC\OpenEntity\OpenEntity\DbFactory\bin\Debug\DbFactory.dll
+E:\PSWork\MVC\OpenEntity\OpenEntity\DbFactory\bin\Debug\DbFactory.pdb
+E:\PSWork\MVC\OpenEntity\OpenEntity\DbFactory\bin\Debug\Extensions.dll
+E:\PSWork\MVC\OpenEntity\OpenEntity\DbFactory\bin\Debug\Extensions.pdb
+E:\PSWork\MVC\OpenEntity\OpenEntity\DbFactory\obj\Debug\DbFactory.dll
+E:\PSWork\MVC\OpenEntity\OpenEntity\DbFactory\obj\Debug\DbFactory.pdb
