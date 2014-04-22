@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Formatting;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 
@@ -12,7 +14,14 @@ namespace WebApp
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+            WebApiConfig.Register(GlobalConfiguration.Configuration);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
+            GlobalConfiguration.Configuration.Formatters.Insert(0, new JsonMediaTypeFormatter());
+            GlobalConfiguration.Configuration.Formatters.XmlFormatter.MediaTypeMappings.Add(
+                new QueryStringMapping("xml", "true", "application/xml")
+            );
         }
     }
 }

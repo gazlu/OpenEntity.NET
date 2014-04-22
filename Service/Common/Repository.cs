@@ -7,6 +7,7 @@ using Extensions;
 using System.Collections.Specialized;
 using DbFactory;
 using System.Configuration;
+using System.Data;
 
 namespace Service.Common
 {
@@ -18,13 +19,13 @@ namespace Service.Common
         public IList<string> Errors = new List<string>();
 
         /// <summary>
-        /// Reads first connection string from App.config/Web.config
+        /// Reads last connection string from App.config/Web.config
         /// </summary>
         /// <param name="tableName">Name of the table</param>
         /// <param name="primaryKeyField">Primary Key Fiekd Name</param>
         public Repository(string tableName, string primaryKeyField = "id")
         {
-            this.ConnectionString = ConfigurationManager.ConnectionStrings[0].ConnectionString;
+            this.ConnectionString = ConfigurationManager.ConnectionStrings[ConfigurationManager.ConnectionStrings.Count - 1].ConnectionString;
             this.TableName = tableName;
             this.PrimaryKeyField = primaryKeyField;
         }
@@ -42,6 +43,7 @@ namespace Service.Common
             this.PrimaryKeyField = primaryKeyField;
         }
 
+        #region Table Methods
         public virtual bool HasPrimaryKey(object o)
         {
             return o.ToDictionary().ContainsKey(PrimaryKeyField);
@@ -89,9 +91,9 @@ namespace Service.Common
                     sql = string.Format(stub, this.TableName, keys, vals);
                 }
                 else throw new InvalidOperationException("Can't parse this object to the database - there are no properties set");
-                object result = dbAccess.ExecuteNonQuery(sql, parameters.ToArray()).Result;
+                object result = dbAccess.ExecuteNonQuery(sql, parameters.ToArray());
 
-                return dbAccess.Scalar("SELECT SCOPE_IDENTITY()").Result;
+                return dbAccess.Scalar("SELECT SCOPE_IDENTITY()");
             }
         }
 
@@ -141,7 +143,7 @@ namespace Service.Common
                     sql = string.Format(stub, TableName, keys, PrimaryKeyField, counter);
                 }
                 else throw new InvalidOperationException("No parsable object was sent in - could not divine any name/value pairs");
-                return (int)dbAccess.ExecuteNonQuery(sql, parameters.ToArray()).Result;
+                return (int)dbAccess.ExecuteNonQuery(sql, parameters.ToArray());
             }
         }
 
@@ -155,7 +157,7 @@ namespace Service.Common
             using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
             {
                 var sql = string.Format("SELECT * FROM {0} WHERE {1}", this.TableName, where);
-                return dbAccess.QueryRecords(sql, null).Result.FirstOrDefault();
+                return dbAccess.QueryRecords(sql, null).FirstOrDefault();
             }
         }
 
@@ -164,11 +166,17 @@ namespace Service.Common
             using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
             {
                 var sql = string.Format("SELECT {0} FROM {1} WHERE {2} = @0", columns, this.TableName, PrimaryKeyField);
-                return dbAccess.QueryRecords(sql, null).Result.FirstOrDefault();
+                return dbAccess.QueryRecords(sql, key).FirstOrDefault();
             }
         }
 
-        public IEnumerable<dynamic> All(string where = "", string orderBy = "", int limit = 0, string columns = "*", params object[] args)
+        public IEnumerable<dynamic> All(
+                string where = "",
+                string orderBy = "",
+                int limit = 0, string
+                columns = "*",
+                params object[] args
+            )
         {
             using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
             {
@@ -177,15 +185,22 @@ namespace Service.Common
                     sql += where.Trim().StartsWith("where", StringComparison.OrdinalIgnoreCase) ? where : "WHERE " + where;
                 if (!String.IsNullOrEmpty(orderBy))
                     sql += orderBy.Trim().StartsWith("order by", StringComparison.OrdinalIgnoreCase) ? orderBy : " ORDER BY " + orderBy;
-                return dbAccess.QueryRecords(string.Format(sql, columns, this.TableName), null).Result;
+                return dbAccess.QueryRecords(string.Format(sql, columns, this.TableName), null);
             }
         }
 
-        public IEnumerable<dynamic> Paged(string where = "", string orderBy = "", string columns = "*", int pageSize = 20, int currentPage = 1, params object[] args)
+        public IEnumerable<dynamic> Paged(
+                string where = "",
+                string orderBy = "",
+                string columns = "*",
+                int pageSize = 20,
+                int currentPage = 1,
+                params object[] args
+            )
         {
             using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
             {
-                return dbAccess.PagedTable(this.TableName, this.PrimaryKeyField, where, orderBy, columns, pageSize, currentPage, args).Result;
+                return dbAccess.PagedTable(this.TableName, this.PrimaryKeyField, where, orderBy, columns, pageSize, currentPage, args);
             }
         }
 
@@ -193,7 +208,7 @@ namespace Service.Common
         {
             using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
             {
-                return dbAccess.Scalar("SELECT COUNT(*) FROM " + this.TableName, null).Result;
+                return dbAccess.Scalar("SELECT COUNT(*) FROM " + this.TableName, null);
             }
         }
 
@@ -202,39 +217,102 @@ namespace Service.Common
             using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
             {
                 var sql = string.Format("SELECT COUNT(1) FROM {0} WHERE {1}", this.TableName, where);
-                return dbAccess.Scalar(sql, args).Result;
+                return dbAccess.Scalar(sql, args);
+            }
+        }
+        #endregion
+
+        #region SP Methods
+        public IEnumerable<dynamic> ReadRecords(string storedProcedure, params object[] args)
+        {
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
+            {
+                return dbAccess.ReadRecords(storedProcedure, args);
             }
         }
 
+        public IEnumerable<dynamic> ReadRecords(string storedProcedure, System.Data.CommandType commandType = CommandType.StoredProcedure, params object[] args)
+        {
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
+            {
+                return dbAccess.ReadRecords(storedProcedure, commandType, args);
+            }
+        }
+
+        public Dictionary<int, List<dynamic>> ReadResults(string storedProcedure, System.Data.CommandType commandType = CommandType.StoredProcedure, params object[] args)
+        {
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
+            {
+                return dbAccess.ReadResults(storedProcedure, commandType, args);
+            }
+        }
+
+        public int Insert(string storedProcedure, params object[] args)
+        {
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
+            {
+                return dbAccess.Insert(storedProcedure, args);
+            }
+        }
+
+        public int Update(string storedProcedure, params object[] args)
+        {
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
+            {
+                return dbAccess.Update(storedProcedure, args);
+            }
+        }
+
+        public int Delete(string storedProcedure, params object[] args)
+        {
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
+            {
+                return dbAccess.Delete(storedProcedure, args);
+            }
+        }
+
+        public System.Data.DataSet ReadDataSet(string storedProcedure, System.Data.CommandType commandType = CommandType.StoredProcedure, params object[] args)
+        {
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
+            {
+                return dbAccess.ReadDataSet(storedProcedure, commandType, args);
+            }
+        }
+
+        public System.Data.DataTable ReadDataTable(string storedProcedure, System.Data.CommandType commandType = CommandType.StoredProcedure, params object[] args)
+        {
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
+            {
+                return dbAccess.ReadDataTable(storedProcedure, commandType, args);
+            }
+        }
+        #endregion
+
         #region Trigger Methods
-        public void Validate(dynamic item)
+        public virtual void Validate(dynamic item)
         {
-            //throw new NotImplementedException();
         }
 
-        public void Inserted(dynamic item)
+        public virtual void Inserted(dynamic item)
         {
-            throw new NotImplementedException();
         }
 
-        public void Updated(dynamic item)
+        public virtual void Updated(dynamic item)
         {
-            throw new NotImplementedException();
         }
 
-        public void Deleted(dynamic item)
+        public virtual void Deleted(dynamic item)
         {
-            throw new NotImplementedException();
         }
 
-        public bool BeforeDelete(dynamic item)
+        public virtual bool BeforeDelete(dynamic item)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
-        public bool BeforeSave(dynamic item)
+        public virtual bool BeforeSave(dynamic item)
         {
-            throw new NotImplementedException();
+            return true;
         }
         #endregion
 

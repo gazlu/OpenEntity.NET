@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DbFactory.Massive;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Service
         {
             using (DbFactory.ISqlDbAccess dbAccess = new DbFactory.SqlDbAccess("ServiceConnection"))
             {
-                return dbAccess.ReadRecords("XyzStoredProcedure", 1, "2", new DateTime()).Result;
+                return dbAccess.ReadRecords("XyzStoredProcedure", 1, "2", new DateTime());
             }
         }
     }
