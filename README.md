@@ -1,6 +1,5 @@
 OpenEntity.NET - Another Micro ORM and Repository
 ==============
 
-Open Entity is a Micro ORM inspired by massive which supports async operation and can b
-e exposed though a businesss repository.
+Open Entity is a Micro ORM inspired by massive which supports async operation and can be exposed though a businesss repository.
 ----
