@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace WebApp.Api
@@ -24,9 +25,9 @@ namespace WebApp.Api
         }
 
         [HttpGet]
-        public IEnumerable<dynamic> AllTasks()
+        public async Task<IEnumerable<dynamic>> AllTasks()
         {
-            return demoRepo.ReadRecords("readtasks", 0);
+            return await demoRepo.ReadRecordsAsync("readtasks", 0);
         }
 
         // GET api/<controller>/5

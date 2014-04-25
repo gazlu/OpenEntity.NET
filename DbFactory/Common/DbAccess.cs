@@ -249,7 +249,7 @@ namespace DbFactory.Common
                 var pageStart = (currentPage - 1) * pageSize;
                 sql += string.Format(" WHERE Row > {0} AND Row <={1}", pageStart, (pageStart + pageSize));
                 countSQL += where;
-                result.TotalRecords = this.ScalarAsync(countSQL, args);
+                result.TotalRecords = await this.ScalarAsync<int>(countSQL, args);
                 result.TotalPages = result.TotalRecords / pageSize;
                 if (result.TotalRecords % pageSize > 0)
                     result.TotalPages += 1;
@@ -258,11 +258,11 @@ namespace DbFactory.Common
             }
         }
 
-        public virtual async Task<int> ScalarAsync(string sql, params object[] args)
+        public virtual async Task<T> ScalarAsync<T>(string sql, params object[] args)
         {
             using (connection)
             {
-                int result = 0;
+                T result;
                 if (connection.State == ConnectionState.Closed) connection.Open();
                 DbProviderFactory factory = DbProviderFactories.GetFactory(connection);
                 using (TCommand command = (TCommand)factory.CreateCommand())
@@ -271,7 +271,7 @@ namespace DbFactory.Common
                     command.CommandText = sql;
                     command.Connection = connection;
                     object resultObject = await command.ExecuteScalarAsync();
-                    result = int.Parse(resultObject.ToString());
+                    result = (T)Convert.ChangeType(resultObject, typeof(T));
                     return result;
                 }
             }
@@ -495,7 +495,7 @@ namespace DbFactory.Common
                 var pageStart = (currentPage - 1) * pageSize;
                 sql += string.Format(" WHERE Row > {0} AND Row <={1}", pageStart, (pageStart + pageSize));
                 countSQL += where;
-                result.TotalRecords = this.ScalarAsync(countSQL, args);
+                result.TotalRecords = this.Scalar<int>(countSQL, args);
                 result.TotalPages = result.TotalRecords / pageSize;
                 if (result.TotalRecords % pageSize > 0)
                     result.TotalPages += 1;
@@ -504,11 +504,11 @@ namespace DbFactory.Common
             }
         }
 
-        public int Scalar(string sql, params object[] args)
+        public T Scalar<T>(string sql, params object[] args)
         {
             using (connection)
             {
-                int result = 0;
+                T result;
                 if (connection.State == ConnectionState.Closed) connection.Open();
                 DbProviderFactory factory = DbProviderFactories.GetFactory(connection);
                 using (TCommand command = (TCommand)factory.CreateCommand())
@@ -517,7 +517,7 @@ namespace DbFactory.Common
                     command.CommandText = sql;
                     command.Connection = connection;
                     object resultObject = command.ExecuteScalar();
-                    result = int.Parse(resultObject.ToString());
+                    result = (T)Convert.ChangeType(resultObject, typeof(T));
                     return result;
                 }
             }

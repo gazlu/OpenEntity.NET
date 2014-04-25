@@ -58,6 +58,24 @@ namespace Service.Common
         DataTable ReadDataTable(string storedProcedure, CommandType commandType = CommandType.StoredProcedure, params object[] args);
         #endregion
 
+        #region Async SP Methods
+        Task<IEnumerable<dynamic>> ReadRecordsAsync(string storedProcedure, params object[] args);
+
+        Task<IEnumerable<dynamic>> ReadRecordsAsync(string storedProcedure, CommandType commandType = CommandType.StoredProcedure, params object[] args);
+
+        Task<Dictionary<int, List<dynamic>>> ReadResultsAsync(string storedProcedure, CommandType commandType = CommandType.StoredProcedure, params object[] args);
+
+        Task<int> InsertAsync(string storedProcedure, params object[] args);
+
+        Task<int> UpdateAsync(string storedProcedure, params object[] args);
+
+        Task<int> DeleteAsync(string storedProcedure, params object[] args);
+
+        Task<DataSet> ReadDataSetAsync(string storedProcedure, CommandType commandType = CommandType.StoredProcedure, params object[] args);
+
+        Task<DataTable> ReadDataTableAsync(string storedProcedure, CommandType commandType = CommandType.StoredProcedure, params object[] args);
+        #endregion
+
         #region Trigger Methods
         void Validate(dynamic item);
         void Inserted(dynamic item);

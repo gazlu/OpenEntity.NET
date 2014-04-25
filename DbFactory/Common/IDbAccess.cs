@@ -33,7 +33,7 @@ namespace DbFactory.Common
 
         Task<IEnumerable<dynamic>> PagedTableAsync(string table, string primaryKey, string where = "", string orderBy = "", string columns = "*", int pageSize = 20, int currentPage = 1, params object[] args);
 
-        Task<int> ScalarAsync(string sql, params object[] args);
+        Task<T> ScalarAsync<T>(string sql, params object[] args);
 
         Task<object> ExecuteNonQueryAsync(string sql, params object[] args);
         #endregion
@@ -61,7 +61,7 @@ namespace DbFactory.Common
 
         IEnumerable<dynamic> PagedTable(string table, string primaryKey, string where = "", string orderBy = "", string columns = "*", int pageSize = 20, int currentPage = 1, params object[] args);
 
-        int Scalar(string sql, params object[] args);
+        T Scalar<T>(string sql, params object[] args);
 
         object ExecuteNonQuery(string sql, params object[] args);
         #endregion

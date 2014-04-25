@@ -8,6 +8,7 @@ using System.Collections.Specialized;
 using DbFactory;
 using System.Configuration;
 using System.Data;
+using DbFactory.Common;
 
 namespace Service.Common
 {
@@ -93,7 +94,7 @@ namespace Service.Common
                 else throw new InvalidOperationException("Can't parse this object to the database - there are no properties set");
                 object result = dbAccess.ExecuteNonQuery(sql, parameters.ToArray());
 
-                return dbAccess.Scalar("SELECT SCOPE_IDENTITY()");
+                return dbAccess.Scalar<int>("SELECT SCOPE_IDENTITY()");
             }
         }
 
@@ -208,7 +209,7 @@ namespace Service.Common
         {
             using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
             {
-                return dbAccess.Scalar("SELECT COUNT(*) FROM " + this.TableName, null);
+                return dbAccess.Scalar<int>("SELECT COUNT(*) FROM " + this.TableName, null);
             }
         }
 
@@ -217,7 +218,7 @@ namespace Service.Common
             using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, DbFactory.Common.Enums.ConnectStringType.ConfigurationFile))
             {
                 var sql = string.Format("SELECT COUNT(1) FROM {0} WHERE {1}", this.TableName, where);
-                return dbAccess.Scalar(sql, args);
+                return dbAccess.Scalar<int>(sql, args);
             }
         }
         #endregion
@@ -288,6 +289,63 @@ namespace Service.Common
         }
         #endregion
 
+        #region Async SP Methods
+        public async Task<IEnumerable<dynamic>> ReadRecordsAsync(string storedProcedure, params object[] args)
+        {
+            IEnumerable<dynamic> result = null;
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, Enums.ConnectStringType.ConfigurationFile))
+            {
+                result = await dbAccess.ReadRecordsAsync(storedProcedure, args);
+            }
+            return result;
+        }
+
+        public async Task<IEnumerable<dynamic>> ReadRecordsAsync(string storedProcedure, CommandType commandType = CommandType.StoredProcedure, params object[] args)
+        {
+            IEnumerable<dynamic> result = null;
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, Enums.ConnectStringType.ConfigurationFile))
+            {
+                result = await dbAccess.ReadRecordsAsync(storedProcedure, commandType, args);
+            }
+            return result;
+        }
+
+        public async Task<Dictionary<int, List<dynamic>>> ReadResultsAsync(string storedProcedure, CommandType commandType = CommandType.StoredProcedure, params object[] args)
+        {
+            Dictionary<int, List<dynamic>> result = null;
+            using (ISqlDbAccess dbAccess = new SqlDbAccess(this.ConnectionString, Enums.ConnectStringType.ConfigurationFile))
+            {
+                result = await dbAccess.ReadResultsAsync(storedProcedure, commandType, args);
+            }
+            return result;
+        }
+
+        public Task<int> InsertAsync(string storedProcedure, params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> UpdateAsync(string storedProcedure, params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> DeleteAsync(string storedProcedure, params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DataSet> ReadDataSetAsync(string storedProcedure, CommandType commandType = CommandType.StoredProcedure, params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<DataTable> ReadDataTableAsync(string storedProcedure, CommandType commandType = CommandType.StoredProcedure, params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
         #region Trigger Methods
         public virtual void Validate(dynamic item)
         {
@@ -314,9 +372,6 @@ namespace Service.Common
         {
             return true;
         }
-        #endregion
-
-        #region Private Methods
         #endregion
     }
 }
