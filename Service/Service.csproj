@@ -46,7 +46,8 @@
       <DependentUpon>Service.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\DemoRepository.cs" />
+    <Compile Include="Repositories\TasksRepository.cs" />
+    <Compile Include="Repositories\TrashRepository.cs" />
     <Compile Include="Service.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

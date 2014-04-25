@@ -1,40 +1,32 @@
-﻿using Service.Common;
-using Service.Repositories;
+﻿using Service.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace WebApp.Api
 {
-    public class DemoController : ApiController
+    public class TrashController : ApiController
     {
-        private ITasksRepository demoRepo;
+        private ITrashRepository trashRepo;
 
-        public DemoController()
+        public TrashController()
         {
-            demoRepo = new TasksRepository();
+            trashRepo = new TrashRepository();
         }
 
         // GET api/<controller>
         public IEnumerable<dynamic> Get()
         {
-            return demoRepo.All();
-        }
-
-        [HttpGet]
-        public async Task<IEnumerable<dynamic>> AllTasks()
-        {
-            return await demoRepo.ReadRecordsAsync("readtasks", 0);
+            return trashRepo.All();
         }
 
         // GET api/<controller>/5
         public dynamic Get(int id)
         {
-            return demoRepo.Single(id);
+            return trashRepo.Single(id);
         }
 
         // POST api/<controller>
